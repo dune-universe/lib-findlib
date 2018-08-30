@@ -5,6 +5,7 @@
  *)
 
 #directory "@SITELIB@/findlib";;
+#directory "@SITELIB@/findlib/top";;
   (* OCaml-4.00 requires to have #directory before we load anything *)
 
 #directory "+compiler-libs";;
@@ -30,7 +31,7 @@ let suffix =
   if is_native then "cmxs" else "cma" in
 if not(exec_test "Topfind.reset;;") then (
   Topdirs.dir_load Format.err_formatter ("@SITELIB@/findlib/findlib." ^ suffix);
-  Topdirs.dir_load Format.err_formatter ("@SITELIB@/findlib/findlib_top." ^ suffix);
+  Topdirs.dir_load Format.err_formatter ("@SITELIB@/findlib/top/findlib_top." ^ suffix);
 );
 ;;
 
