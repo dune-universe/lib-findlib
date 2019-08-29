@@ -7,7 +7,7 @@
 
 #set -x
 
-version="1.8.0"
+version="1.8.1"
 
 # Remember the old IFS value:
 oldifs="$IFS"
@@ -184,7 +184,7 @@ echo "Configuring core..."
 
 # Some standard Unix tools must be available:
 
-for tool in sed awk ocaml ocamlc uname rm make cat m4 dirname basename; do
+for tool in sed ocaml ocamlc uname rm make cat m4 dirname basename; do
     if in_path $tool; then true; else
 	echo "configure: $tool not in PATH; this is required" 1>&2
 	exit 1
@@ -354,18 +354,15 @@ ocaml itest-aux/remdir.ml >/dev/null 2>/dev/null || have_remdir=0
 echo "Testing threading model..."
 
 if ocamlc -vmthread >/dev/null 2>/dev/null; then
-    :
+    ocaml_threads="vm"
 else
-    echo "The -vmthread switch is not supported: Your ocaml version is too old!"
-    exit 1
+    ocaml_threads="none"
 fi
 
 if ocamlc -config >/dev/null 2>/dev/null; then
     # Good. ocamlc tells us the threading model.
     if ocamlc -config | grep 'systhread_supported: true'; then
 	ocaml_threads="posix"
-    else
-	ocaml_threads="vm"
     fi
 else
     # Old ocamlc do not have -config.
@@ -376,8 +373,6 @@ else
 
     if [ -z "$output" ]; then
 	ocaml_threads="posix"
-    else
-	ocaml_threads="vm"
     fi
 fi
 

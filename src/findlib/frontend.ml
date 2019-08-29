@@ -931,6 +931,9 @@ let ocamlc which () =
       | _       -> `None
   in
   let threads = ref `None in
+  let support_threads() =
+    if threads_default = `None then
+      failwith "threading is not supported on this platform" in
 
   let add_switch name =
     Arg.Unit (fun () ->
@@ -1027,10 +1030,10 @@ let ocamlc which () =
 	      Arg.String (fun s -> pp_specified := true; add_spec_fn "-pp" s);
 	      
 	      "-thread", 
-	      Arg.Unit (fun _ -> threads := threads_default);
+              Arg.Unit (fun _ -> support_threads(); threads := threads_default);
             
 	      "-vmthread", 
-	      Arg.Unit (fun _ -> threads := `VM_threads);
+              Arg.Unit (fun _ -> support_threads(); threads := `VM_threads);
               
 	      "-", 
 	      Arg.String (fun s -> pass_files := !pass_files @  [ Pass s ]);
@@ -1866,6 +1869,12 @@ let create_owner_file pkg file =
       exc -> close_out f; raise exc
 ;;
 
+let trim_cr s =
+  let len = String.length s in
+  if len > 0 && String.get s (len-1) = '\r' then
+    String.sub s 0 (len-1)
+  else
+    s
 
 let find_owned_files pkg dir =
   let files = Array.to_list(Sys.readdir dir) in
@@ -1883,7 +1892,7 @@ let find_owned_files pkg dir =
            let f =
              Unix.in_channel_of_descr fd in
            try
-             let line = input_line f in
+             let line = trim_cr (input_line f) in
              let is_my_file = (line = pkg) in
              close_in f;
              is_my_file
@@ -2458,7 +2467,7 @@ let print_configuration() =
 	  (Findlib.ocaml_ldconf());
 	flush stdout
     | Some "conf" ->
-	print_endline Findlib_config.config_file
+	print_endline (Findlib.config_file())
     | Some "path" ->
 	List.iter print_endline (Findlib.search_path())
     | Some "destdir" ->
