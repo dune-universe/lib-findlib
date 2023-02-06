@@ -23,3 +23,7 @@ src/findlib/topfind
 src/findlib/topfind.ml
 tools/extract_args/extract_args
 tools/extract_args/extract_args.ml
+_build
+.merlin
+*.install
+.*.swp
