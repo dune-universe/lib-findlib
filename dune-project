@@ -1,2 +1,2 @@
-(lang dune 1.10)
+(lang dune 3.4)
 (name findlib)
