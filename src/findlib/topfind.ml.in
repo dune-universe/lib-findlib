@@ -125,7 +125,7 @@ let load pkglist =
 
 
                  begin try
-                     match Hashtbl.find Toploop.directive_table "ppx" with
+                     match Hashtbl.find (Toploop.directive_table [@ocaml.alert "-deprecated"]) "ppx" with
                        | Toploop.Directive_string fn -> 
                             fn ppx; !log (ppx ^ ": activated")
                        | _ -> assert false
@@ -254,8 +254,7 @@ let protect f arg =
 
 (* Add "#require" directive: *)
 
-Hashtbl.add
-    Toploop.directive_table
+Toploop.add_directive
     "require"
     (Toploop.Directive_string
        (fun s ->
@@ -264,8 +263,7 @@ Hashtbl.add
 ;;
 
 (* Add "#predicates" directive: *)
-Hashtbl.add
-    Toploop.directive_table
+Toploop.add_directive
     "predicates"
     (Toploop.Directive_string
        (fun s ->
@@ -276,8 +274,7 @@ Hashtbl.add
 
 (* Add "#camlp4o" directive: *)
 
-Hashtbl.add
-    Toploop.directive_table
+Toploop.add_directive
     "camlp4o"
     (Toploop.Directive_none
        (fun () ->
@@ -289,8 +286,7 @@ Hashtbl.add
 
 (* Add "#camlp4r" directive: *)
 
-Hashtbl.add
-    Toploop.directive_table
+Toploop.add_directive
     "camlp4r"
     (Toploop.Directive_none
        (fun () ->
@@ -303,8 +299,7 @@ Hashtbl.add
 
 (* Add "#list" directive: *)
 
-Hashtbl.add
-    Toploop.directive_table
+Toploop.add_directive
     "list"
     (Toploop.Directive_none
        (fun () ->
@@ -315,8 +310,7 @@ Hashtbl.add
 
 (* Add "#thread" directive: *)
 
-Hashtbl.add
-    Toploop.directive_table
+Toploop.add_directive
     "thread"
     (Toploop.Directive_none
        (fun () ->
